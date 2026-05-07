@@ -1,118 +1,230 @@
-# MedQA — Medical AI on AMD ROCm
+![AMD](https://img.shields.io/badge/AMD-MI300X-red)
+![ROCm](https://img.shields.io/badge/ROCm-6.1-blue)
+![LoRA](https://img.shields.io/badge/LoRA-Finetuned-green)
+![Status](https://img.shields.io/badge/status-working-success)
+# 🧠 MedQA — Medical AI on AMD ROCm
 
-Fine-tuned LLM for clinical question answering.
-Built for the AMD Hackathon on lablab.ai.
-Runs entirely on AMD hardware. No CUDA required.
+Clinical question-answering LLM fine-tuned on MedMCQA using LoRA.  
+Runs entirely on **AMD Instinct MI300X (ROCm)** — no CUDA required.
 
+---
 
-## What This Does
+# 🚀 What it does
 
-MedQA takes a multiple-choice clinical question with 4 options and returns:
-- The correct answer letter (A/B/C/D)
-- A clinical explanation of the reasoning
+MedQA takes a multiple-choice medical question and returns:
 
-Fine-tuned on 193,000 medical MCQs from MedMCQA using LoRA.
-Only 0.15% of parameters were trained — fast and memory efficient.
+- ✅ Correct answer (A/B/C/D)
+- 🧾 Clinical reasoning / explanation
 
+---
 
-## Stack
+# 🧠 Example
 
-Base Model    : Qwen/Qwen2-1.5B
-Fine-tuning   : PEFT LoRA (r=4, q/v projection)
-Dataset       : openlifescienceai/medmcqa
-Hardware      : AMD Instinct MI300X (192GB HBM3)
-Framework     : PyTorch + HuggingFace Transformers + TRL
-Precision     : bfloat16 (ROCm native)
-Web UI        : Gradio
+## Question
 
+> First-line treatment for hypertensive emergency?
 
-## Project Structure
+## Model Output
 
-medqa-finetune/
-  train.py        LoRA fine-tuning pipeline
-  infer.py        CLI inference on sample questions
-  eval.py         Accuracy evaluation with subject breakdown
-  app.py          Gradio web app
-  requirements.txt
-  outputs/        Saved LoRA adapter and tokenizer
+```text
+Answer: B) IV labetalol or IV nitroprusside
 
+Explanation:
+Intravenous beta-blockers rapidly reduce blood pressure quickly and safely in emergency settings.
+```
 
-## Quickstart
+---
 
-1. Clone and setup
+# ⚙️ Tech Stack
 
-git clone https://github.com/YOUR_USERNAME/medqa-rocm
-cd medqa-rocm
-python3 -m venv venv && source venv/bin/activate
+| Component | Details |
+|---|---|
+| Base Model | Qwen2-1.5B |
+| Fine-tuning | LoRA (PEFT) |
+| Dataset | MedMCQA |
+| Hardware | AMD MI300X (192GB) |
+| Framework | PyTorch + Transformers |
+| Precision | bfloat16 (ROCm native) |
+| UI | Gradio |
 
-2. Install dependencies
+---
 
+# ⚡ AMD Developer Cloud Setup
+
+## 1. Create GPU Droplet
+
+Go to AMD Developer Cloud.
+
+Click **Create Instance / GPU Droplet**
+
+Select:
+
+- GPU: **MI300X**
+- Image: **ROCm 6.x (recommended)**
+- Region: any available
+
+Click **Launch**
+
+---
+
+## 2. Open Web Console
+
+Click your instance.
+
+Click **Web Console**
+
+You will get a terminal like:
+
+```bash
+root@rocm-...:~#
+```
+
+---
+
+## 3. Update system (recommended)
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+---
+
+## 4. Clone project
+
+```bash
+git clone https://github.com/HK2184/MedQA-Medical-AI-on-AMD-ROCm.git
+
+cd MedQA-Medical-AI-on-AMD-ROCm
+```
+
+---
+
+## 5. Create environment
+
+```bash
+python3 -m venv venv
+
+source venv/bin/activate
+```
+
+---
+
+## 6. Install dependencies (ROCm)
+
+```bash
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.1
+
 pip install transformers datasets peft accelerate trl gradio
+```
 
-3. Train
+---
 
-python3 train.py
-Approx 5 minutes on AMD MI300X
+# 🧠 Training
 
-4. Evaluate
+```bash
+python train.py
+```
 
-python3 eval.py
-Runs on 100 MedMCQA validation samples with per-subject breakdown
+- Runs LoRA fine-tuning
+- Takes ~5 minutes on MI300X
+- Saves adapter in `outputs/`
 
-5. Launch app
+---
 
-python3 app.py
-Local  : http://0.0.0.0:7860
-Public : shown in terminal as gradio.live link
+# 🔍 Inference
+
+```bash
+python infer.py
+```
+
+Runs sample clinical questions.
+
+Outputs answer + explanation.
+
+---
+
+# 🌐 Web App
+
+```bash
+python app.py
+```
+
+Then open:
+
+```text
+http://0.0.0.0:7860
+```
+
+Gradio may also provide a public link.
+
+---
+
+# 📁 Project Structure
+
+```text
+medqa-finetune/
+│
+├── train.py        # LoRA fine-tuning
+├── infer.py        # CLI inference
+├── eval.py         # Evaluation script
+├── app.py          # Gradio UI
+├── README.md
+```
+
+---
+
+# ⚡ Why AMD ROCm?
+
+- MI300X (192GB HBM3) → zero memory issues
+- Native bfloat16 → stable training
+- No CUDA dependency → fully open stack
+- Works seamlessly with HuggingFace
+
+---
+
+# 🛠️ Challenges & Fixes
+
+| Issue | Fix |
+|---|---|
+| NaN loss | Switched to bfloat16 |
+| Trainer errors | Adjusted for transformers version |
+| GPU not detected | Set ROCm env variables |
+| Inference garbage output | Fixed tokenizer + decoding |
+| bitsandbytes unsupported | Used bf16 instead |
+
+---
+
+# 📊 Results
+
+- Trainable params: ~2.2M / 1.5B (0.15%)
+- Training time: ~5 minutes
+- Dataset: MedMCQA
+- Baseline accuracy: 25%
+
+---
+
+## 🖥️ Demo
+
+![App Screenshot]  <img width="1000" height="952" alt="Screenshot From 2026-05-07 14-26-07" src="https://github.com/user-attachments/assets/776df667-472b-445a-b73f-a06ccc47e3c9" />
 
 
-## AMD ROCm Developer Notes
+# 🚀 Roadmap
 
-What worked great:
-- AMD MI300X with 192GB HBM3 — zero memory pressure
-- bfloat16 is native and stable on ROCm — more stable than fp16
-- device_map="auto" works seamlessly
-- ROCm 6.1 PyTorch wheel installed without issues
-
-Gotchas and fixes:
-
-Issue                                  Fix
-grad_norm nan during training          Switch fp16 to bfloat16
-evaluation_strategy keyword error      Renamed to eval_strategy
-tokenizer= in Trainer error            Renamed to processing_class=
-torch_dtype= deprecated warning        Use dtype= instead
-GPU not detected                       Set HSA_OVERRIDE_GFX_VERSION=9.4.2
-Exclamation marks in inference output  Load tokenizer from BASE_MODEL not adapter path, use merge_and_unload()
-bitsandbytes not supported on ROCm     Use bfloat16 instead of int4 or int8
-
-
-## Results
-
-Training time     : ~5 mins on MI300X
-Trainable params  : ~2.2M of 1.5B (0.15%)
-Training samples  : 500
-Eval accuracy     : run eval.py to fill this in
-Random baseline   : 25% (4-choice MCQ)
-
-
-## Roadmap
-
-- Scale to 10k+ training samples
-- Push adapter to HuggingFace Hub
-- Add confidence score per answer
-- Subject-specific fine-tuning (cardiology, pharmacology, etc.)
+- Scale to larger dataset
+- Push model to HuggingFace Hub
+- Add confidence scoring
 - Deploy on HuggingFace Spaces
 
+---
 
-## Built in Public
+# 📜 License
 
-X        : tag @AIatAMD and @lablabai
-LinkedIn : tag AMD Developer and lablab.ai
+MIT License
 
+---
 
-## License
+# 🙌 Acknowledgements
 
-MIT — free to use, modify, and build on.
+Built for the AMD Hackathon on lablab.ai
 
-Built at the AMD Hackathon 2025 on lablab.ai
+Powered by AMD ROCm + HuggingFace ecosystem
