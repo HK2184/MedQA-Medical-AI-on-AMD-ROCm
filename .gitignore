@@ -1,0 +1,7 @@
+venv/
+outputs/
+.gradio/
+__pycache__/
+*.pyc
+*.pt
+*.bin
