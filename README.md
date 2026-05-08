@@ -39,7 +39,7 @@ Intravenous beta-blockers rapidly reduce blood pressure quickly and safely in em
 
 | Component | Details |
 |---|---|
-| Base Model | Qwen2-1.5B |
+| Base Model | Qwen3-1.7B |
 | Fine-tuning | LoRA (PEFT) |
 | Dataset | MedMCQA |
 | Hardware | AMD MI300X (192GB) |
