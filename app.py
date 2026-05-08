@@ -8,7 +8,7 @@ os.environ["ROCR_VISIBLE_DEVICES"] = "0"
 os.environ["HIP_VISIBLE_DEVICES"] = "0"
 os.environ["HSA_OVERRIDE_GFX_VERSION"] = "9.4.2"
 
-BASE_MODEL   = "Qwen/Qwen2-1.5B"
+BASE_MODEL   = "Qwen/Qwen3-1.7B"
 ADAPTER_PATH = "./outputs"
 
 print("Loading tokenizer...")
