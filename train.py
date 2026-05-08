@@ -14,7 +14,7 @@ os.environ["ROCR_VISIBLE_DEVICES"] = "0"
 os.environ["HIP_VISIBLE_DEVICES"] = "0"
 os.environ["HSA_OVERRIDE_GFX_VERSION"] = "9.4.2"
 
-MODEL_ID     = "Qwen/Qwen2-1.5B"
+MODEL_ID     = "Qwen/Qwen3-1.7B"
 OUTPUT_DIR   = "./outputs"
 MAX_LENGTH   = 256
 NUM_SAMPLES  = 2000
