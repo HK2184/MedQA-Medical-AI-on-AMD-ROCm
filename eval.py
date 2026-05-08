@@ -8,7 +8,7 @@ os.environ["ROCR_VISIBLE_DEVICES"] = "0"
 os.environ["HIP_VISIBLE_DEVICES"] = "0"
 os.environ["HSA_OVERRIDE_GFX_VERSION"] = "9.4.2"
 
-BASE_MODEL   = "Qwen/Qwen2-1.5B"
+BASE_MODEL   = "Qwen/Qwen3-1.7B"
 ADAPTER_PATH = "./outputs"
 NUM_EVAL     = 100
 LABEL_MAP    = {0: "A", 1: "B", 2: "C", 3: "D"}
