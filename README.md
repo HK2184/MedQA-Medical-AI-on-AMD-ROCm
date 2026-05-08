@@ -199,12 +199,58 @@ medqa-finetune/
 - Trainable params: ~2.2M / 1.5B (0.15%)
 - Training time: ~5 minutes
 - Dataset: MedMCQA
-- Baseline accuracy: 25%
+- Baseline accuracy: 45%
 
 ---
+## Model on HuggingFace Hub
 
+The fine-tuned LoRA adapter is publicly available on HuggingFace:
+https://huggingface.co/HK2184/medqa-qwen3-lora
+
+You can load it directly in Python without cloning this repo:
+
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    from peft import PeftModel
+    import torch
+
+    tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-1.7B", trust_remote_code=True)
+    base = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-1.7B", dtype=torch.bfloat16, device_map="auto", trust_remote_code=True)
+    model = PeftModel.from_pretrained(base, "HK2184/medqa-qwen3-lora")
+    model = model.merge_and_unload()
+    model.eval()
+
+To upload your own trained adapter to HuggingFace Hub:
+
+    hf auth login
+    hf repos create YOUR_USERNAME/medqa-qwen3-lora --type model
+    hf upload YOUR_USERNAME/medqa-qwen3-lora ./outputs .
+
+
+## Live Demo on HuggingFace Spaces
+
+Try the app without any setup:
+https://huggingface.co/spaces/lablab-ai-amd-developer-hackathon/MedQA-Medical-AI-on-AMD-ROCm
+
+The Space loads the LoRA adapter directly from HuggingFace Hub and runs
+inference on CPU. For full AMD ROCm performance, run locally on AMD hardware
+using the instructions above.
+
+To deploy your own Space:
+
+    git clone https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE
+    cd YOUR_SPACE
+    cp /path/to/app.py .
+    echo "torch
+    transformers>=4.40.0
+    peft>=0.10.0
+    accelerate>=0.29.0
+    gradio>=4.0.0
+    huggingface_hub>=0.20.0" > requirements.txt
+    git add .
+    git commit -m "Deploy MedQA app"
+    git push
+    
 ## 🖥️ Demo
-
 ![App Screenshot]  <img width="1000" height="952" alt="Screenshot From 2026-05-07 14-26-07" src="https://github.com/user-attachments/assets/776df667-472b-445a-b73f-a06ccc47e3c9" />
 
 
